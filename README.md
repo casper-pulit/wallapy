@@ -31,7 +31,7 @@ Options:
                                -q, --queit: Displays progress bar only
                                
                                default = -q, --quiet
-  -d, --delete / -k, --keep    "-d, --delete: Deletes source files after
+  -d, --delete / -k, --keep    -d, --delete: Deletes source files after
                                processing complete
                                
                                -k, --keep: Keeps source files
