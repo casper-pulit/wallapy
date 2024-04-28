@@ -61,23 +61,30 @@ def wallapy(dir_path, verbose, delete, output_dir):
         else:
             break
 
+    # Clean this up later... 
+    # Check if file passed
+
+    if os.path.isdir(dir_path) :
     # Get dir information
-    file_list = []
-    for file in os.listdir(dir_path):
-        if os.path.isfile(f"{dir_path}/{file}"):
-            file_list.append(f"{dir_path}/{file}")
+        file_list = []
+        for file in os.listdir(dir_path):
+            if os.path.isfile(f"{dir_path}/{file}"):
+                file_list.append(f"{dir_path}/{file}")
 
-    for file in tqdm(os.listdir(dir_path)):
-        if os.path.isfile(f"{dir_path}/{file}"):
-            if verbose:
-                click.echo(f"Processing {dir_path}{file}")
-
-            splitAndSave(filename=file, path=dir_path, output_dir=output_dir)
-
-            if delete:
+        for file in tqdm(os.listdir(dir_path)):
+            if os.path.isfile(f"{dir_path}/{file}"):
                 if verbose:
-                    click.echo(f"{dir_path}/{file} Deleted")
-                os.remove(f"{dir_path}/{file}")
+                    click.echo(f"Processing {dir_path}{file}")
+
+                splitAndSave(filename=file, path=dir_path, output_dir=output_dir)
+
+                if delete:
+                    if verbose:
+                        click.echo(f"{dir_path}/{file} Deleted")
+                    os.remove(f"{dir_path}/{file}")
+    else:
+        click.echo("Please pass a directory")
+        exit()
 
 
 if __name__ == "__main__":
