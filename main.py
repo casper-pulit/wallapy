@@ -1,57 +1,84 @@
-from PIL import Image
 import os
+from tqdm import tqdm
+import click
+from src.Exceptions import InvalidInput
+from src.Utils import splitAndSave
 
 
-def splitAndSave(path):
-    with Image.open(path) as im:
-        left_tuple = [0, 0, im.width / 2, im.height]
-        right_tuple = [im.width / 2, 0, im.width, im.height]
-        im.crop(box=left_tuple).save(f"l_{path}")
-        im.crop(box=right_tuple).save(f"r_{path}")
-        if delete_source :
-            os.remove(path)
+@click.command()
+@click.argument("dir_path")
+@click.option(
+    "-v/-q",
+    "--verbose/--quiet",
+    default=False,
+    help="""
+        -v, --verbose: Prints additional information during script execution
 
-class InvalidInput(Exception) :
-    pass
+        -q, --queit: Displays progress bar only
 
-def main():
-    dir_path = "/home/casper/Pictures/wallpapers/"
-    print(dir_path)
-    delete_source = True
+        default = -q, --quiet
 
+        """,
+)
+@click.option(
+    "-d/-k",
+    "--delete/--keep",
+    default=False,
+    help=""""-d, --delete: Deletes source files after processing complete
+    
+    -k, --keep: Keeps source files
+    
+    default = -k, --keep""",
+)
+@click.option(
+    "-o",
+    "--output_dir",
+    default=None,
+    help="""
+    -o, --output_dir: Specifies output directory for processed images.
+    If the directory does not exist the script will try to create it.                 
+    
+    default: None, same as input directory""",
+)
+def wallapy(dir_path, verbose, delete, output_dir):
     while True:
-        if delete_source :
-            try :
-                confirm = input("You've selected to remove source files after processing, enter Y to proceed, N to cancel:\n\n")
-                if confirm.lower() != "y" and confirm.lower() != "n" :
+        if delete:
+            try:
+                confirm = input(
+                    "You've selected to remove source files after processing, enter Y to proceed, N to cancel:\n\n"
+                )
+                if confirm.lower() != "y" and confirm.lower() != "n":
                     raise InvalidInput
             except InvalidInput:
                 print(f"Invalid Input: {confirm}. Please enter Y or N to proceed.")
                 continue
-            else :
-                if confirm.lower() == "n" :
+            else:
+                if confirm.lower() == "n":
                     print("Exiting...")
                     exit()
-                elif confirm.lower() == "y" :
+                elif confirm.lower() == "y":
                     break
+        else:
+            break
 
-            
-
-
+    # Get dir information
+    file_list = []
     for file in os.listdir(dir_path):
-        print(dir_path + file)
-        print(f"{dir_path}L_{file}")
-        print(f"{dir_path}R_{file}")
-        
-        if delete_source :
-            print(dir_path + file + " Deleted")
-            #os.remove(dir_path + file)
-        else :
-            print(dir_path + file + " Not Deleted")
+        if os.path.isfile(f"{dir_path}/{file}"):
+            file_list.append(f"{dir_path}/{file}")
 
-    #splitAndSave(path + file)
+    for file in tqdm(os.listdir(dir_path)):
+        if os.path.isfile(f"{dir_path}/{file}"):
+            if verbose:
+                click.echo(f"Processing {dir_path}{file}")
 
-    print("Hello World")
+            splitAndSave(filename=file, path=dir_path, output_dir=output_dir)
+
+            if delete:
+                if verbose:
+                    click.echo(f"{dir_path}/{file} Deleted")
+                os.remove(f"{dir_path}/{file}")
+
 
 if __name__ == "__main__":
-    main()
+    wallapy()
