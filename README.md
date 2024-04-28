@@ -23,7 +23,7 @@ KDE Plasma doesn't support wallpaper spanning (???) and no one has the time to p
 
 ### CLI flags for better control
 
-```zsh
+```
 Options:
   -v, --verbose / -q, --quiet  -v, --verbose: Prints additional information
                                during script execution
