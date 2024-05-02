@@ -1,8 +1,8 @@
 import os
 from tqdm import tqdm
 import click
-from src.Exceptions import InvalidInput
-from src.Utils import splitAndSave
+from .InvalidInput import InvalidInput
+from .splitAndSave import splitAndSave
 
 
 @click.command()
@@ -40,7 +40,7 @@ from src.Utils import splitAndSave
     
     default: None, same as input directory""",
 )
-def wallapy(dir_path, verbose, delete, output_dir):
+def main(dir_path, verbose, delete, output_dir):
     while True:
         if delete:
             try:
@@ -81,4 +81,4 @@ def wallapy(dir_path, verbose, delete, output_dir):
 
 
 if __name__ == "__main__":
-    wallapy()
+    main()
